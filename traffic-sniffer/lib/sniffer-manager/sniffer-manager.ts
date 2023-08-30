@@ -1,11 +1,12 @@
 import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { SnifferConfigSetup } from "../model/setup-config/file-config.types";
-import { ConfigLoader } from "../model/setup-config/config-loader-interface";
+import { SnifferConfigLoader } from "../setup-config/sniffer-setup-config/sniffer-config-loader-interface";
+import { SnifferConfigSetup } from "../setup-config/sniffer-setup-config/sniffer-file-config.types";
+
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
 
-  constructor(private readonly configPersistency: ConfigLoader) {
+  constructor(private readonly snifferConfigPersistency: SnifferConfigLoader) {
     this.sniffers = [];
   }
 
@@ -19,7 +20,7 @@ export class SnifferManager {
     const newSniffer = new Sniffer(snifferConfig);
 
     this.sniffers.push(newSniffer);
-    this.configPersistency.addSniffer(snifferConfig);
+    this.snifferConfigPersistency.add(snifferConfig);
     return newSniffer;
   }
 
@@ -55,7 +56,7 @@ export class SnifferManager {
     }
 
     this.sniffers.splice(index, 1);
-    this.configPersistency.removeSniffer(port);
+    this.snifferConfigPersistency.remove(port);
   }
 
   getSnifferById(id: string) {
@@ -77,7 +78,7 @@ export class SnifferManager {
     }
 
     await this.sniffers[existingIndex].editSniffer(newConfig);
-    this.configPersistency.update(
+    this.snifferConfigPersistency.update(
       existingId,
       newConfig,
       this.sniffers[existingIndex].getIsStarted(),
@@ -97,7 +98,7 @@ export class SnifferManager {
   }
 
   setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
-    this.configPersistency.setIsStarted(snifferId, isStarted);
+    this.snifferConfigPersistency.setIsStarted(snifferId, isStarted);
   }
 
   getAllMocks() {
