@@ -1,19 +1,13 @@
 import express, { Express, json } from "express";
 import request from "supertest";
 import { SnifferManager, SnifferManagerController } from "../../../lib";
-import { ConfigLoader } from "../../../lib/setup-config/config-loader-interface";
+import { ConfigLoader } from "../../../lib/setup-config/config-loader";
 import { SnifferConfigSetup } from "../../../lib/setup-config/sniffer-setup-config/sniffer-file-config.types";
 import { SnifferConfig } from "../../../lib/sniffer/sniffer";
 import { SnifferFileConfig } from "../../../lib/setup-config/sniffer-setup-config/sniffer-file-config";
 
-jest.mock("../../../lib/model/setup-config/file-config", () => {
-  class MockFileConfig implements ConfigLoader {
-    configData: SnifferConfigSetup[];
-
-    constructor(configData: SnifferConfigSetup[]) {
-      this.configData = configData;
-    }
-
+jest.mock("../../../lib/setup-config/file-config", () => {
+  class MockFileConfig extends ConfigLoader<SnifferConfigSetup> {
     getConfig(): SnifferConfigSetup[] {
       throw new Error("Method not implemented.");
     }
@@ -37,7 +31,7 @@ jest.mock("../../../lib/model/setup-config/file-config", () => {
 
 describe("sniffer-manager-controller", () => {
   let app: Express;
-  let configPersistency: ConfigLoader;
+  let configPersistency: ConfigLoader<SnifferConfigSetup>;
   let snifferManager: SnifferManager;
   let snifferManagerController: SnifferManagerController;
 

@@ -2,7 +2,7 @@ import fsSync from "fs";
 import fs from "fs/promises";
 import { ZodError } from "zod";
 import { SnifferConfig } from "../../sniffer/sniffer";
-import { SnifferConfigLoader } from "./sniffer-config-loader-interface";
+import { ConfigLoader } from "../config-loader";
 import {
   SnifferConfigSetup,
   sniffersConfigValidator,
@@ -14,21 +14,10 @@ const log = useLog({
   filename: __filename,
 });
 
-export class SnifferFileConfig implements SnifferConfigLoader {
-  configData: SnifferConfigSetup[];
-  path: string;
-
+export class SnifferFileConfig extends ConfigLoader<SnifferConfigSetup> {
   constructor(path: string) {
-    this.configData = [];
-    this.path = path;
-  }
-
-  getConfig() {
-    this.createFileIfNotExist(this.path);
-    this.configData = this.readSetupFileData(this.path);
-
-    console.info("Loaded config from file");
-    return this.configData;
+    super(path);
+    this.validator = sniffersConfigValidator;
   }
 
   update(existingId: string, newConfig: SnifferConfig, isStarted: boolean) {
@@ -106,10 +95,6 @@ export class SnifferFileConfig implements SnifferConfigLoader {
     updatedSetup.isStarted = isStarted;
     this.configData[foundIndex] = updatedSetup;
     this.writeToSetupFile();
-  }
-
-  async writeToSetupFile() {
-    await fs.writeFile(this.path, JSON.stringify(this.configData, null, 2));
   }
 
   createSnifferSetup(

@@ -1,12 +1,14 @@
 import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { SnifferConfigLoader } from "../setup-config/sniffer-setup-config/sniffer-config-loader-interface";
+import { ConfigLoader } from "../setup-config/config-loader";
 import { SnifferConfigSetup } from "../setup-config/sniffer-setup-config/sniffer-file-config.types";
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
 
-  constructor(private readonly snifferConfigPersistency: SnifferConfigLoader) {
+  constructor(
+    private readonly snifferConfigPersistency: ConfigLoader<SnifferConfigSetup>,
+  ) {
     this.sniffers = [];
   }
 
