@@ -27,7 +27,7 @@ export abstract class ConfigLoader<Type> {
   }
   abstract update(existingId: string, newConfig: any, isStarted: boolean): void;
   abstract add(config: any): void;
-  abstract remove(id: number): void;
+  abstract remove(id: number | string): void;
   abstract setIsStarted(snifferId: string, isStarted: boolean): void;
 
   async createFileIfNotExist(path: string) {

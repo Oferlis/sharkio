@@ -14,21 +14,20 @@ export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const fileConfig = new SnifferFileConfig(setupFilePath);
-  const config = fileConfig.getConfig();
-  console.debug(config);
+  const snifferFileConfig = new SnifferFileConfig(setupFilePath);
+  const configData: SnifferConfigSetup[] = snifferFileConfig.getConfig();
+  console.debug(configData);
 
   const collectionFilePersistency = new CollectionFilePersistency(
     "./collections.json",
   );
 
-  const snifferManager = new SnifferManager(fileConfig);
+  const snifferManager = new SnifferManager(snifferFileConfig);
   const collectionManager = new CollectionManager(collectionFilePersistency);
   const collectionManagerController = new CollectionManagerController(
     collectionManager,
   );
 
-  const configData: SnifferConfigSetup[] = fileConfig.getConfig();
   await snifferManager.loadSniffersFromConfig(configData);
 
   const snifferController = new SnifferManagerController(snifferManager);
