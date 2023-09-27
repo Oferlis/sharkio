@@ -10,11 +10,11 @@ import { CollectionManager } from "./lib/collection-manager/collection-manager";
 import { CollectionManagerController } from "./lib/collection-manager/collection-manager-controller";
 import { CollectionFilePersistency } from "./lib/collection-manager/collection-file-persistency";
 
-export const setupFilePath =
-  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
+export const snifferSetupFilePath =
+  process.env.SNIFFER_SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const snifferFileConfig = new SnifferFileConfig(setupFilePath);
+  const snifferFileConfig = new SnifferFileConfig(snifferSetupFilePath);
   const configData: SnifferConfigSetup[] = snifferFileConfig.getConfig();
   console.debug(configData);
 
